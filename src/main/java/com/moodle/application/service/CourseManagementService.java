@@ -8,8 +8,8 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,28 +20,27 @@ import com.google.gson.reflect.TypeToken;
 import com.moodle.application.dto.Course;
 import com.moodle.application.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class CourseManagementService {
 
-	@Autowired
-	private AuthenticationService authenticationSerivce;
+	private final AuthenticationService authenticationSerivce;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	public Collection<Course> getCourseInformation() throws Exception {
+	public List<Course> getCourseInformation() throws Exception {
 		String token = getCurrentLoggedInUserMoodleTokenId();
 		String domainName = "http://localhost/moodle";
 
 		String restformat = "json";
 		       
-		if (restformat.equals("json")) 
-		{
+		if (restformat.equals("json")) {
 		   restformat = "&moodlewsrestformat=" + restformat;
 		} 
 
-		else 
-		{
+		else {
 		    restformat = "";
 		}
 		        
@@ -82,9 +81,10 @@ public class CourseManagementService {
 		        Gson gson = builder.create();
 
 		        Type collectionType = new TypeToken<Collection<Course>>() {}.getType();
-		        Collection<Course> courses = gson.fromJson(response.toString(), collectionType);
+		        List<Course> coursesCollection = gson.fromJson(response.toString(), collectionType);
 
-		return courses;
+
+		return coursesCollection;
 	}
 
 	private String getCurrentLoggedInUserMoodleTokenId() {

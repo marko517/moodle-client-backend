@@ -9,24 +9,25 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.moodle.application.dto.Assignment;
 import com.moodle.application.dto.Assignments;
 import com.moodle.application.dto.Courses;
 import com.moodle.application.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class MoodleAssignmentManagerService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private AuthenticationService authenticationSerivce;
+	private final AuthenticationService authenticationSerivce;
 
 	public Courses getAssignmentsForCourse(Long courseId) throws MalformedURLException, IOException {
 		String token = getCurrentLoggedInUserMoodleTokenId();
@@ -67,13 +68,13 @@ public class MoodleAssignmentManagerService {
             response.append('\r');
         }
         rd.close();
-        System.out.println(response.toString());
+
         Gson gson = new Gson();
         Courses courses = gson.fromJson(response.toString(), Courses.class);
         return courses;
 	}
 
-	public Assignments getSubmissionForAssignment(Long assignmentId) throws Exception {
+	public Assignment getSubmissionForAssignment(Long assignmentId) throws Exception {
 		String token = getCurrentLoggedInUserMoodleTokenId();
         String domainName = "http://localhost/moodle";
 
@@ -112,11 +113,41 @@ public class MoodleAssignmentManagerService {
             response.append('\r');
         }
         rd.close();
-        System.out.println(response.toString());
+
         Gson gson = new Gson();
         Assignments assignment = gson.fromJson(response.toString(), Assignments.class);
-        return assignment;
+        if (assignment == null) {
+        	throw new Exception("No Assignments found");
+        }
+        
+        assignment.getAssignments()
+        	.stream()
+        	
+        	.filter(ass -> ass != null)
+        	.map(ass -> ass.getSubmissions())
+        	
+        	.filter(sub -> sub != null)
+        	.flatMap(sub -> sub.stream())
+        	.map(sub -> sub.getPlugins())
+        	
+        	.filter(plug -> plug != null)
+        	.flatMap(plug -> plug.stream())
+        	.map(plug -> plug.getFileareas())
+        	
+        	.filter(area -> area != null)
+        	.flatMap(area -> area.stream())
+        	.map(area -> area.getFiles())
+        	
+        	.filter(file -> file != null)
+        	.flatMap(file -> file.stream())
+        	.forEach(file -> {
+        		file.setFileurl(file.getFileurl() + "?token=" + token);
+        	});
+
+        return assignment.getAssignments().get(0);
 	}
+	
+	
 
 	private String getCurrentLoggedInUserMoodleTokenId() {
 		User loggedInUser = getLoggedInUser();

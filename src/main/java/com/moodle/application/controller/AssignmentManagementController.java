@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moodle.application.dto.Assignments;
+import com.moodle.application.dto.Assignment;
 import com.moodle.application.dto.Courses;
 import com.moodle.application.service.MoodleAssignmentManagerService;
 
@@ -26,7 +26,7 @@ public class AssignmentManagementController {
 	}
 
 	@GetMapping("/submissions/{assignmentId}")
-	public ResponseEntity<Assignments> getSubmissionsForAssignment(@PathVariable Long assignmentId) throws Exception {
+	public ResponseEntity<Assignment> getSubmissionsForAssignment(@PathVariable Long assignmentId) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(moodleAssignmentManagementService.getSubmissionForAssignment(assignmentId));
 	}

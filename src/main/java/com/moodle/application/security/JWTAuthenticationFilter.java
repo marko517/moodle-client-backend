@@ -29,7 +29,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		String jwt = getJWTFromRequest(request);
 
-		//username is added as subject to the token so now we have to retrieve it
+
 		if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
 			String username = jwtProvider.extractUsernameFromToken(jwt);
 
@@ -52,3 +52,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 }
+
+
+
+
+
+
+
+
+//username is added as subject to the token so now we have to retrieve it

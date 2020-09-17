@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,15 @@ import com.google.gson.GsonBuilder;
 import com.moodle.application.dto.MoodleUsers;
 import com.moodle.application.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class MoodleUserManagementService {
 
-	@Autowired
-	private AuthenticationService authenticationSerivce;
+	private final AuthenticationService authenticationSerivce;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	public MoodleUsers getUsersInfo() throws IOException {
 		String token = getCurrentLoggedInUserMoodleTokenId();

@@ -3,7 +3,6 @@ package com.moodle.application.service;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +17,7 @@ import lombok.AllArgsConstructor;
 @Transactional
 public class RefreshTokenService {
 
-	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	public RefreshToken generateRefreshToken() {
 		RefreshToken refreshToken = new RefreshToken();
@@ -29,7 +27,7 @@ public class RefreshTokenService {
 		return refreshTokenRepository.save(refreshToken);
 	}
 
-	void validateRefreshToken(String token) throws MoodleAppException {
+	void validateRefreshToken(String token) {
 		refreshTokenRepository.findByToken(token)
 		.orElseThrow(() -> new MoodleAppException("Invalid refresh token"));
 	}

@@ -11,8 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Plugin {
 
-	private String type;
-	private String name;
 	private List<FileArea> fileareas;
-	private String gradingstatus;
 }

@@ -23,10 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.moodle.application.exception.StorageException;
 import com.moodle.application.property.FileStorageProperties;
 
+import lombok.AllArgsConstructor;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 @Service
+@AllArgsConstructor
 public class FileStorageService {
 
 	private final Path fileStorageLocation;

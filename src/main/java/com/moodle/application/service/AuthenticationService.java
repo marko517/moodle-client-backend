@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,20 +28,15 @@ import lombok.AllArgsConstructor;
 @Transactional
 public class AuthenticationService {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JWTProvider jwtProvider;
+	private final JWTProvider jwtProvider;
 
-	@Autowired
-	private RefreshTokenService refreshTokenService;
+	private final RefreshTokenService refreshTokenService;
 
 	public void signup(RegisterUser registerUserDTO) {
 		User user = new User();
@@ -79,7 +73,7 @@ public class AuthenticationService {
 		return Optional.of(principal);
 	}
 
-	public AuthenticationResponse refreshToken(@Valid RefreshTokenRequest refreshTokenRequest) throws Exception {
+	public AuthenticationResponse refreshToken(@Valid RefreshTokenRequest refreshTokenRequest) {
 		refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
 		String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
 

@@ -20,7 +20,7 @@ public class FileHandlerController {
 	@Autowired
 	private FileStorageService storageService;
 
-	@PostMapping("/submissions")
+	@PostMapping("/file-upload")
 	public ResponseEntity<List<String>> checkSubmissionContentForFile(@RequestParam("file") MultipartFile file) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(storageService.storeFile(file));
